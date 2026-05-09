@@ -105,7 +105,10 @@ class BertEmbedding:
         :return: A torch vector.
         """
         tokens_tensor = self.tokenize_input(text)
-        pooled, hidden_states = self.model(tokens_tensor)[-2:]
+        with torch.no_grad():
+            model_out = self.model(tokens_tensor, output_hidden_states=True)
+        
+        hidden_states = model_out.hidden_states
 
         # deprecated temporary keyword functions.
         if reduce_option == 'concat_last_4':
